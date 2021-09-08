@@ -1,9 +1,6 @@
 name: Lint and Test Charts
 
-on:
-  push:
-    paths:
-      - 'stable/**'
+on: push
 jobs:
   lint-test:
     runs-on: ubuntu-18.04
