@@ -10,11 +10,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run chart-testing (lint)
-        id: lint
+      - name: Setup chart-testing
         uses: helm/chart-testing-action@v2.1.0
         with:
-          command: lint
+          version: 3.6.3
+
+      - name: Run chart-testing (lint)
+        run: ct lint
+        with:
           config: .github/lint.yaml
 
 #      - name: Create kind cluster
