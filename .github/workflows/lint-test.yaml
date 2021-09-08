@@ -13,19 +13,23 @@ jobs:
       - name: Setup chart-testing
         uses: helm/chart-testing-action@v2.1.0
 
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --config .github/ct.yaml)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
       - name: Run chart-testing (lint)
-        run: ct lint --config .github/lint.yaml
+        run: ct lint --config .github/ct.yaml
+        if: steps.list-changed.outputs.changed == 'true'
 
-#      - name: Create kind cluster
-#        uses: helm/kind-action@v1.0.0
-#        with:
-#          node_image: kindest/node:v1.16.15
-        # Only build a kind cluster if there are changed charts to test
-#        if: steps.lint.outputs.changed == 'true'
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+        with:
+          node_image: kindest/node:v1.16.15
+        if: steps.list-changed.outputs.changed == 'true'
 
-
-#      - name: Run chart-testing (install)
-#        uses: helm/chart-testing-action@v1.1.0
-#        with:
-#          command: install
-#          config: .github/ct-install.yaml
+      - name: Run chart-testing (install)
+        run: ct install --config .github/ct.yaml
