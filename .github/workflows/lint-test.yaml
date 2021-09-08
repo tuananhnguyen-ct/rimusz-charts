@@ -1,0 +1,35 @@
+name: Lint and Test Charts
+
+on:
+  push:
+    paths:
+      - 'charts/stable/**'
+jobs:
+  lint-test:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Run chart-testing (lint)
+        id: lint
+        uses: helm/chart-testing-action@v1.1.0
+        with:
+          command: lint
+          config: .github/lint.yaml
+
+#      - name: Create kind cluster
+#        uses: helm/kind-action@v1.0.0
+#        with:
+#          node_image: kindest/node:v1.16.15
+        # Only build a kind cluster if there are changed charts to test
+#        if: steps.lint.outputs.changed == 'true'
+
+
+#      - name: Run chart-testing (install)
+#        uses: helm/chart-testing-action@v1.1.0
+#        with:
+#          command: install
+#          config: .github/ct-install.yaml

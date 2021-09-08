@@ -1,0 +1,5 @@
+target-branch: master
+
+validate-maintainers: false
+
+excluded-charts: []
